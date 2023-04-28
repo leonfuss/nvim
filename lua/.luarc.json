@@ -1,0 +1,15 @@
+{
+    "workspace.library": [
+        "/home/leon/.local/share/nvim/lazy/neodev.nvim/types/stable",
+        "/usr/share/nvim/runtime/lua",
+        "/home/leon/.local/share/nvim/lazy/neodev.nvim/lua",
+        "/home/leon/.local/share/nvim/lazy/lazy.nvim/lua",
+        "/home/leon/.local/share/nvim/lazy/nvim-lspconfig/lua",
+        "/home/leon/.local/share/nvim/lazy/nvim-web-devicons/lua",
+        "/home/leon/.local/share/nvim/lazy/mason.nvim/lua",
+        "/home/leon/.local/share/nvim/lazy/trouble.nvim/lua",
+        "/home/leon/.local/share/nvim/lazy/gruvbox.nvim/lua",
+        "/home/leon/.config/nvim/lua",
+        "${3rd}/luv/library"
+    ]
+}
