@@ -24,3 +24,30 @@ local postfix = require("luasnip.extras.postfix").postfix
 local types = require("luasnip.util.types")
 local parse = require("luasnip.util.parser").parse_snippet
 local ms = ls.multi_snippet
+
+return {
+	s(
+		{
+			trig = "preamble",
+		},
+		fmta(
+			[[ 
+\documentclass[11pt,a4paper]{article} 
+
+\usepackage[utf8]{inputenc}
+\usepackage{babel, <>}
+
+\title{<>}
+\author{Leon Fuß}
+
+\begin{document}
+
+\maketitle
+ <>
+
+\end{document}
+		]],
+			{ i(1), i(2), i(0) }
+		)
+	),
+}

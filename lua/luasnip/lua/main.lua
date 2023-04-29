@@ -26,12 +26,19 @@ local parse = require("luasnip.util.parser").parse_snippet
 local ms = ls.multi_snippet
 
 return {
-	s({
-		trig = "hi",
-		dscr = "hi to the computer world",
-		regTrig = false,
-		snippetType = "autosnippet",
-	}, {
-		t("Hello World"),
-	}),
+	s(
+		{
+			trig = "snip",
+		},
+		fmta(
+			[[
+		s({
+			trig= "<>", <>
+		},{
+      <>
+		})
+		]],
+			{ i(1), i(2), i(3) }
+		)
+	),
 }

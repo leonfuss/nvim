@@ -19,7 +19,6 @@ return {
 		event = "BufEnter",
 	},
 	{
-		enabled = false,
 		"lervag/vimtex",
 		lazy = false,
 	},

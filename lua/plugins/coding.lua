@@ -47,18 +47,16 @@ return {
 		},
 		config = function()
 			-- require("luasnip.loaders.from_vscode").lazy_load()
-			require("luasnip.loaders.from_lua").lazy_load({ paths = "~/.config/nvim/luasnip" })
-			require("luasnip").config.set_config({ -- Setting LuaSnip config
-				-- Enable autotriggered snippets
+			require("luasnip").setup({
 				enable_autosnippets = true,
 				-- Use Tab (or some other key if you prefer) to trigger visual selection
-				store_selection_keys = "<Tab>",
+				store_selection_keys = "<tab>",
+				history = true,
+				delete_check_events = "TextChanged",
+				update_events = "TextChanged,TextChangedI",
 			})
+			require("luasnip.loaders.from_lua").lazy_load({ paths = "~/.config/nvim/lua/luasnip" })
 		end,
-		opts = {
-			history = true,
-			delete_check_events = "TextChanged",
-		},
 		-- stylua: ignore
 		keys = {
 			{
