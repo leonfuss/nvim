@@ -68,7 +68,16 @@ return {
 			},
 			{ "<tab>", function() require("luasnip").jump(1) end, mode = "s" },
 			{ "<s-tab>", function() require("luasnip").jump(-1) end, mode = { "i", "s" } },
+			{"<C-n>", "<Plug>luasnip-next-choice"},
+			{"<C-p>", "<Plug>luasnip-prev-choice"},
 		},
+	},
+	{
+		"iurimateus/luasnip-latex-snippets.nvim",
+		config = function()
+			require("luasnip-latex-snippets").setup()
+		end,
+		ft = "tex",
 	},
 
 	-- auto completion
@@ -265,6 +274,17 @@ return {
 				i = i,
 				a = a,
 			})
+		end,
+	},
+
+	{
+		"akinsho/flutter-tools.nvim",
+		lazy = false,
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
+		config = function()
+			require("flutter-tools").setup({})
 		end,
 	},
 }

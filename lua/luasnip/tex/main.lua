@@ -26,6 +26,30 @@ local parse = require("luasnip.util.parser").parse_snippet
 local ms = ls.multi_snippet
 
 return {
+	-- s({
+	-- 	trig = "use",
+	-- }, fmta("\\usepackage{<>}", { i(1) })),
+	--
+	-- s({
+	-- 	trig = "useopt",
+	-- }, fmta("\\usepackage[<>]{<>}", { i(1), i(2) })),
+	--
+	-- s({
+	-- 	trig = "section",
+	-- }, fmta("\\section{<>}", { i(1) })),
+	--
+	-- s({
+	-- 	trig = "section*",
+	-- }, fmta("\\section*{<>}", { i(1) })),
+	--
+	-- s({
+	-- 	trig = "subsec",
+	-- }, fmta("\\subsection{<>}", { i(1) })),
+	--
+	-- s({
+	-- 	trig = "subsec*",
+	-- }, fmta("\\subsection*{<>}", { i(1) })),
+
 	s(
 		{
 			trig = "preamble",

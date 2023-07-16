@@ -24,33 +24,41 @@ local postfix = require("luasnip.extras.postfix").postfix
 local types = require("luasnip.util.types")
 local parse = require("luasnip.util.parser").parse_snippet
 local ms = ls.multi_snippet
+local utils = require("luasnip.utils")
 
 return {
-	s({
-		trig = ".env",
-		snippetType = "autosnippet",
-	}, {
+	s(
+		{
+			trig = "üenv",
+			snippetType = "autosnippet",
+		},
 		fmta(
 			[[ 
-        \begin{<>}
-				   <>
-				\end{<>}
+\begin{<>}
+	<>
+\end{<>}
 			]],
 			{ i(1), i(0), rep(1) }
-		),
-	}),
+		)
+	),
 
 	s({
-		trig = ".eq",
+		trig = "üit",
 		snippetType = "autosnippet",
-	}, {
+	}, fmta("\\item", {}), { condition = utils.tex.in_itemize }),
+
+	s(
+		{
+			trig = "üeq",
+			snippetType = "autosnippet",
+		},
 		fmta(
 			[[ 
-        \begin{equation}
-				   <>
-				\end{equation}
+\begin{equation}
+	<>
+\end{equation}
 			]],
 			{ i(0) }
-		),
-	}),
+		)
+	),
 }

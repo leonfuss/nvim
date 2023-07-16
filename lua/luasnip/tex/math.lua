@@ -25,20 +25,13 @@ local types = require("luasnip.util.types")
 local parse = require("luasnip.util.parser").parse_snippet
 local ms = ls.multi_snippet
 
-local utils = require("luasnip.tex.utils")
+local utils = require("luasnip.utils")
 
 return {
-	-- s({
-	-- 	trig = "hi",
-	-- 	dscr = "hi to the computer world",
-	-- 	regTrig = false,
-	-- 	snippetType = "autosnippet",
-	-- }, {
-	-- 	t("Hello World"),
-	-- }),
+
 	s(
-		{ trig = "([^%a])mm", wordTrig = false, regTrig = true },
-		fmta("<>$<>$", {
+		{ trig = "([^%a])mm", wordTrig = false, regTrig = true, snippetType = "autosnippet" },
+		fmta("<>$ <> $", {
 			f(function(_, snip)
 				return snip.captures[1]
 			end),
@@ -46,14 +39,63 @@ return {
 		})
 	),
 
-	s({ trig = "mm", snippetType = "autosnippet" }, fmta("$ <> $", { i(1) })),
-	s({ trig = ";a", snippetType = "autosnippet" }, {
-		t("\\alpha"),
-	}, { condition = utils.in_mathzone }),
-	s({ trig = ";b", snippetType = "autosnippet" }, {
-		t("\\beta"),
-	}),
-	s({ trig = ";g", snippetType = "autosnippet" }, {
-		t("\\gamma"),
-	}),
+	-------------
+	-- Symbols --
+	-------------
+
+	-- greek letters
+	s({ trig = "üa", snippetType = "autosnippet" }, { t("\\alpha") }, { condition = utils.tex.in_mathzone }),
+	s({ trig = "üb", snippetType = "autosnippet" }, { t("\\beta") }, { condition = utils.tex.in_mathzone }),
+	s({ trig = "üg", snippetType = "autosnippet" }, { t("\\gamma") }, { condition = utils.tex.in_mathzone }),
+	s({ trig = "üs", snippetType = "autosnippet" }, fmta("\\sigma", {}), { condition = utils.tex.in_mathzone }),
+	s({ trig = "üm", snippetType = "autosnippet" }, fmta("\\mu", {}), { condition = utils.tex.in_mathzone }),
+	s({ trig = "üd", snippetType = "autosnippet" }, fmta("\\delta", {}), { condition = utils.tex.in_mathzone }),
+
+	-- operators
+	s({ trig = "*", snippetType = "autosnippet" }, fmta("\\cdot", {}), { condition = utils.tex.in_mathzone }),
+	s({ trig = "!=", snippetType = "autosnippet" }, fmta("\\neq", {}), { condition = utils.tex.in_mathzone }),
+	s({ trig = "in", snippetType = "autosnippet" }, fmta("\\in", {}), { condition = utils.tex.in_mathzone }),
+	s({ trig = "to", snippetType = "autosnippet" }, fmta("\\to", {}), { condition = utils.tex.in_mathzone }),
+	s({ trig = "mapsto", snippetType = "autosnippet" }, fmta("\\mapsto", {}), { condition = utils.tex.in_mathzone }),
+	s({ trig = "pm", snippetType = "autosnippet" }, fmta("\\pm", {}), { condition = utils.tex.in_mathzone }),
+	s({ trig = "cap", snippetType = "autosnippet" }, fmta("\\cap", {}), { condition = utils.tex.in_mathzone }),
+	s({ trig = "cup", snippetType = "autosnippet" }, fmta("\\cup", {}), { condition = utils.tex.in_mathzone }),
+
+	-- special symbols
+	s({ trig = "CI", snippetType = "autosnippet" }, fmta("\\CI", {}), { condition = utils.tex.in_mathzone }),
+	s({ trig = "SE", snippetType = "autosnippet" }, fmta("\\SE", {}), { condition = utils.tex.in_mathzone }),
+
+	-- arrows
+	s({ trig = "=>", snippetType = "autosnippet" }, fmta("\\Rightarrow", {}), { condition = utils.tex.in_mathzone }),
+	s(
+		{ trig = "->", snippetType = "autosnippet" },
+		fmta("\\longrightarrow", {}),
+		{ condition = utils.tex.in_mathzone }
+	),
+
+	------------------
+	-- Surroundings --
+	------------------
+
+	-- spans
+	s(
+		{ trig = "text", snippetType = "autosnippet" },
+		fmta("\\text{<>}", { i(1) }),
+		{ condition = utils.tex.in_mathzone }
+	),
+	s(
+		{ trig = "sq", snippetType = "autosnippet" },
+		fmta("\\sqrt{<>}", { i(1) }),
+		{ condition = utils.tex.in_mathzone }
+	),
+	s(
+		{ trig = "bar", snippetType = "autosnippet" },
+		fmta("\\overline{<>}", { i(1) }),
+		{ condition = utils.tex.in_mathzone }
+	),
+	s(
+		{ trig = "hat", snippetType = "autosnippet" },
+		fmta("\\hat{<>}", { i(1) }),
+		{ condition = utils.tex.in_mathzone }
+	),
 }

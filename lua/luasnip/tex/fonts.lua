@@ -25,13 +25,7 @@ local types = require("luasnip.util.types")
 local parse = require("luasnip.util.parser").parse_snippet
 local ms = ls.multi_snippet
 
-local get_visual = function(args, parent)
-	if #parent.snippet.env.SELECT_RAW > 0 then
-		return sn(nil, i(1, parent.snippet.env.SELECT_RAW))
-	else -- If SELECT_RAW is empty, return a blank insert node
-		return sn(nil, i(1))
-	end
-end
+local utils = require("luasnip.utils")
 
 return {
 	s(
@@ -40,7 +34,7 @@ return {
 			dscr = "Expands 'tii' into LaTeX's textit{} command.",
 		},
 		fmta("\\textit{<>}", {
-			d(1, get_visual),
+			d(1, utils.get_visual),
 		})
 	),
 }
