@@ -8,15 +8,17 @@ vim.api.nvim_set_keymap("n", "j", "gj", default_opts)
 vim.api.nvim_set_keymap("n", "k", "gk", default_opts)
 
 local options = {
+	tw = 80,
+	expandtab = true,
 	backup = false,
 	clipboard = "unnamedplus",
 	cmdheight = 2,
 	completeopt = { "menuone", "noselect" },
-	fileencoding = "utf-8",
+	fileencoding = "UTF-8",
 	hidden = true,
 	hlsearch = true,
 	ignorecase = true,
-	mouse = "a",
+	mouse = "nv",
 	pumheight = 10,
 	showtabline = 2,
 	smartcase = true,
@@ -35,6 +37,8 @@ local options = {
 	numberwidth = 2,
 	signcolumn = "yes",
 	scrolloff = 6,
+	spelllang = "en_gb,de,it",
+	spell = true,
 }
 
 vim.opt.shortmess:append("c")
@@ -42,6 +46,9 @@ vim.opt.shortmess:append("c")
 for k, v in pairs(options) do
 	vim.opt[k] = v
 end
+
+-- fix spelling mistakes on the fly with <c-l>
+vim.api.nvim_set_keymap("i", "<c-c>", "<c-g>u<Esc>[s1z=`]i<c-g>u", default_opts)
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -57,4 +64,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup("plugins")
+require("lsp")
 require("autocommands")
+
+vim.lsp.set_log_level("debug")

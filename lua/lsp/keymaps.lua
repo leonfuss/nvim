@@ -1,15 +1,15 @@
 local M = {}
 
----@type PluginLspKeys
 M._keys = nil
 
----@return (LazyKeys|{has?:string})[]
+local skip = { mode = true, id = true, ft = true, rhs = true, lhs = true }
+
 function M.get()
-	local format = require("plugins.lsp.format").format
+	local format = require("lsp.format").format
 	if not M._keys then
-  ---@class PluginLspKeys
     -- stylua: ignore
     M._keys =  {
+      { "<leader>a", vim.lsp.buf.code_action, desc = "Open code actions", mode = {"n", "v"}, has ="codeAction"},
       { "<leader>cd", vim.diagnostic.open_float, desc = "Line Diagnostics" },
       { "<leader>cl", "<cmd>LspInfo<cr>", desc = "Lsp Info" },
       { "gd", "<cmd>Telescope lsp_definitions<cr>", desc = "Goto Definition", has = "definition" },
@@ -28,7 +28,6 @@ function M.get()
       { "[w", M.diagnostic_goto(false, "WARN"), desc = "Prev Warning" },
       { "<leader>cf", format, desc = "Format Document", has = "documentFormatting" },
       { "<leader>cf", format, desc = "Format Range", mode = "v", has = "documentRangeFormatting" },
-      { "<leader>ca", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" }, has = "codeAction" },
       {
         "<leader>cA",
         function()
@@ -50,23 +49,22 @@ function M.get()
 	return M._keys
 end
 
-function M.on_attach(client, buffer)
-	local Keys = require("lazy.core.handler.keys")
-	local keymaps = {} ---@type table<string,LazyKeys|{has?:string}>
-
-	for _, value in ipairs(M.get()) do
-		local keys = Keys.parse(value)
-		if keys[2] == vim.NIL or keys[2] == false then
-			keymaps[keys.id] = nil
-		else
-			keymaps[keys.id] = keys
+function M.opts(keys)
+	local opts = {}
+	---@diagnostic disable-next-line: no-unknown
+	for k, v in pairs(keys) do
+		if type(k) ~= "number" and not skip[k] then
+			---@diagnostic disable-next-line: no-unknown
+			opts[k] = v
 		end
 	end
+	return opts
+end
 
-	for _, keys in pairs(keymaps) do
+function M.on_attach(client, buffer)
+	for _, keys in pairs(M.get()) do
 		if not keys.has or client.server_capabilities[keys.has .. "Provider"] then
-			local opts = Keys.opts(keys)
-			---@diagnostic disable-next-line: no-unknown
+			local opts = M.opts(keys)
 			opts.has = nil
 			opts.silent = opts.silent ~= false
 			opts.buffer = buffer

@@ -79,13 +79,18 @@ return {
 
 	-- spans
 	s(
-		{ trig = "text", snippetType = "autosnippet" },
+		{ trig = "text ", snippetType = "autosnippet" },
 		fmta("\\text{<>}", { i(1) }),
 		{ condition = utils.tex.in_mathzone }
 	),
 	s(
-		{ trig = "sq", snippetType = "autosnippet" },
+		{ trig = "sq ", snippetType = "autosnippet" },
 		fmta("\\sqrt{<>}", { i(1) }),
+		{ condition = utils.tex.in_mathzone }
+	),
+	s(
+		{ trig = "ubar", snippetType = "autosnippet" },
+		fmta("\\underbar{<>}", { i(1) }),
 		{ condition = utils.tex.in_mathzone }
 	),
 	s(
@@ -94,8 +99,24 @@ return {
 		{ condition = utils.tex.in_mathzone }
 	),
 	s(
-		{ trig = "hat", snippetType = "autosnippet" },
+		{ trig = "hat ", snippetType = "autosnippet" },
 		fmta("\\hat{<>}", { i(1) }),
 		{ condition = utils.tex.in_mathzone }
 	),
+	s(
+		{ trig = "ubr ", snippetType = "autosnippet" },
+		fmta("\\underbrace{<>}_{<>}", { i(1), i(2) }),
+		{ condition = utils.tex.in_mathzone }
+	),
+	s(
+		{ trig = "obr ", snippetType = "autosnippet" },
+		fmta("\\overbrace{<>}^{<>}", { i(1), i(2) }),
+		{ condition = utils.tex.in_mathzone }
+	),
+
+	s({ trig = "alpha ", snippetType = "autosnippet" }, fmta("\\alpha}", {}), { condition = utils.tex.in_mathzone }),
+	s({ trig = "beta ", snippetType = "autosnippet" }, fmta("\\beta}", {}), { condition = utils.tex.in_mathzone }),
+	s({ trig = "Gamma ", snippetType = "autosnippet" }, fmta("\\Gamma}", {}), { condition = utils.tex.in_mathzone }),
+	s({ trig = "mu ", snippetType = "autosnippet" }, fmta("\\mu}", {}), { condition = utils.tex.in_mathzone }),
+	s({ trig = "sigma ", snippetType = "autosnippet" }, fmta("\\sigma}", {}), { condition = utils.tex.in_mathzone }),
 }

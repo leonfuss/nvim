@@ -41,6 +41,7 @@ return {
 	{
 		"L3MON4D3/LuaSnip",
 		build = "make install_jsregexp",
+		version = "2.*",
 		dependencies = {
 			"hrsh7th/nvim-cmp",
 			"rafamadriz/friendly-snippets",
@@ -90,9 +91,11 @@ return {
 			"hrsh7th/cmp-buffer",
 			"hrsh7th/cmp-path",
 			"saadparwaiz1/cmp_luasnip",
+			"onsails/lspkind.nvim",
 		},
 		opts = function()
 			local cmp = require("cmp")
+			local lspkind = require("lspkind")
 			return {
 				completion = {
 					completeopt = "menu,menuone,noinsert",
@@ -103,12 +106,16 @@ return {
 					end,
 				},
 				mapping = cmp.mapping.preset.insert({
+					["<C-i>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
+					["<C-e>"] = cmp.mapping({
+						i = cmp.mapping.abort(),
+						c = cmp.mapping.close(),
+					}),
 					["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
 					["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
 					["<C-b>"] = cmp.mapping.scroll_docs(-4),
 					["<C-f>"] = cmp.mapping.scroll_docs(4),
 					["<C-Space>"] = cmp.mapping.complete(),
-					["<C-e>"] = cmp.mapping.abort(),
 					["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
 					["<S-CR>"] = cmp.mapping.confirm({
 						behavior = cmp.ConfirmBehavior.Replace,
@@ -116,19 +123,29 @@ return {
 					}), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
 				}),
 				sources = cmp.config.sources({
+					{ name = "codeium" },
+					-- { name = "copilot", group_index = 2 },
 					{ name = "nvim_lsp" },
 					{ name = "luasnip" },
 					{ name = "buffer" },
 					{ name = "path" },
 					{ name = "crates" },
 				}),
+
 				formatting = {
-					format = function(_, item)
-						if icons[item.kind] then
-							item.kind = icons[item.kind] .. item.kind
-						end
-						return item
-					end,
+					format = lspkind.cmp_format({
+						mode = "symbol", -- show only symbol annotations
+						maxwidth = 60, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
+						ellipsis_char = "...", -- when popup menu exceed maxwidth,
+						-- the truncated part would show ellipsis_char instead (must define maxwidth first)
+						symbol_map = { Codeium = "" },
+
+						-- The function below will be called before any actual modifications from lspkind
+						-- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
+						before = function(_entry, vim_item)
+							return vim_item
+						end,
+					}),
 				},
 				experimental = {
 					ghost_text = {
@@ -139,9 +156,23 @@ return {
 		end,
 	},
 	{
+		"simrat39/rust-tools.nvim",
+		config = function() end,
+	},
+	{
+		"folke/neodev.nvim",
+		config = function() end,
+	},
+	{
 		"saecki/crates.nvim",
 		dependencies = { "nvim-lua/plenary.nvim" },
-		config = true,
+		config = function()
+			require("crates").setup({
+				src = {
+					cmp = { enabled = true },
+				},
+			})
+		end,
 	},
 
 	-- auto pairs
@@ -276,15 +307,41 @@ return {
 			})
 		end,
 	},
-
 	{
-		"akinsho/flutter-tools.nvim",
-		lazy = false,
+		"Exafunction/codeium.nvim",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
+			"hrsh7th/nvim-cmp",
 		},
 		config = function()
-			require("flutter-tools").setup({})
+			require("codeium").setup({})
+		end,
+	},
+	-- {
+	-- 	"zbirenbaum/copilot.lua",
+	-- 	event = "BufEnter",
+	-- 	config = function(_, opts)
+	-- 		require("copilot").setup({
+	-- 			suggestion = { enabled = false },
+	-- 			panel = { enabled = false },
+	-- 		})
+	-- 	end,
+	-- },
+	-- {
+	-- 	"zbirenbaum/copilot-cmp",
+	-- 	config = function()
+	-- 		require("copilot_cmp").setup({})
+	-- 	end,
+	-- },
+	{
+		"onsails/lspkind.nvim",
+		config = function()
+			require("lspkind").init({
+				symbol_map = {
+					Copilot = "",
+				},
+			})
+			vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
 		end,
 	},
 }

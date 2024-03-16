@@ -57,11 +57,37 @@ local function telescope(builtin, opts)
 end
 
 return {
+	--window picker
+	{
+		"s1n7ax/nvim-window-picker",
+		name = "window-picker",
+		event = "VeryLazy",
+		version = "2.*",
+		config = function()
+			require("window-picker").setup({
+				filter_rules = {
+					include_current_win = false,
+					autoselect_one = true,
+					bo = {
+						-- if the file type is one of the following, the window will be ignored
+						filetype = { "neo-tree", "neo-tree-popup", "notify" },
+						buftype = { "terminal", "quickfix" },
+					},
+				},
+			})
+		end,
+	},
 
-	-- file explorer
 	{
 		"nvim-neo-tree/neo-tree.nvim",
+		branch = "v3.x",
+		lazy = false,
 		cmd = "Neotree",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+			"MunifTanjim/nui.nvim",
+		},
 		keys = {
 			{
 				"<leader>fe",
@@ -80,39 +106,76 @@ return {
 			{ "<leader>e", "<leader>fe", desc = "Explorer NeoTree (root dir)", remap = true },
 			{ "<leader>E", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
 		},
-		deactivate = function()
-			vim.cmd([[Neotree close]])
+		config = function()
+			-- defining icons for diagnostic errors
+			vim.fn.sign_define("DiagnosticSignError", { text = " ", texthl = "DiagnosticSignError" })
+			vim.fn.sign_define("DiagnosticSignWarn", { text = " ", texthl = "DiagnosticSignWarn" })
+			vim.fn.sign_define("DiagnosticSignInfo", { text = " ", texthl = "DiagnosticSignInfo" })
+			vim.fn.sign_define("DiagnosticSignHint", { text = "󰌵", texthl = "DiagnosticSignHint" })
+
+			require("neo-tree").setup({
+				close_if_last_window = false,
+				popup_border_style = "rounded",
+				enable_git_status = true,
+				enable_diagnosics = true,
+				open_files_do_not_replace_types = { "terminal", "trouble", "qt" },
+				sort_case_insensitive = true,
+				filesystem = {
+					filtered_items = {
+						visible = true,
+						hide_dotfiles = true,
+						hide_gitignored = false,
+						always_show = {
+							".gitignored",
+						},
+					},
+					follow_current_file = {
+						enabled = true,
+						leave_dirs_open = false,
+					},
+					hijack_netrw_behavior = "open_default",
+					use_libuv_file_watcher = true,
+				},
+			})
 		end,
-		init = function()
-			vim.g.neo_tree_remove_legacy_commands = 1
-			if vim.fn.argc() == 1 then
-				local stat = vim.loop.fs_stat(vim.fn.argv(0))
-				if stat and stat.type == "directory" then
-					require("neo-tree")
-				end
-			end
-		end,
+	},
+	{
+		"folke/noice.nvim",
+		event = "VeryLazy",
 		opts = {
-			filesystem = {
-				bind_to_cwd = false,
-				follow_current_file = true,
-			},
-			window = {
-				mappings = {
-					["<space>"] = "none",
+			lsp = {
+				-- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+				override = {
+					["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+					["vim.lsp.util.stylize_markdown"] = true,
+					["cmp.entry.get_documentation"] = true,
 				},
 			},
-			default_component_configs = {
-				indent = {
-					with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
-					expander_collapsed = "",
-					expander_expanded = "",
-					expander_highlight = "NeoTreeExpander",
-				},
+			presets = {
+				bottom_search = true, -- use a classic bottom cmdline for search
+				command_palette = true, -- position the cmdline and popupmenu together
+				long_message_to_split = true, -- long messages will be sent to a split
+				inc_rename = false, -- enables an input dialog for inc-rename.nvim
+				lsp_doc_border = false, -- add a border to hover docs and signature help
 			},
 		},
+		dependencies = {
+			"MunifTanjim/nui.nvim",
+			"rcarriga/nvim-notify",
+		},
 	},
-	{ "MunifTanjim/nui.nvim", lazy = true },
+
+	{
+		"rcarriga/nvim-notify",
+		config = function()
+			require("notify").setup({
+				render = "minimal",
+				timeout = 1000,
+				top_down = false,
+				stages = "fade",
+			})
+		end,
+	},
 
 	-- search/replace in multiple files
 	{
@@ -428,5 +491,14 @@ return {
       { "<leader>xT", "<cmd>TodoTrouble keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme (Trouble)" },
       { "<leader>st", "<cmd>TodoTelescope<cr>", desc = "Todo" },
     },
+	},
+
+	-- symbol outline
+	{
+		"simrat39/symbols-outline.nvim",
+		config = true,
+		keys = {
+			{ "<leader>co", "<cmd>SymbolsOutline<cr>", desc = "Symbols Outline" },
+		},
 	},
 }
